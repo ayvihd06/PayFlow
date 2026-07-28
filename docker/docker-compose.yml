@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: payflow-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: payflow
+      POSTGRES_PASSWORD: payflow123
+      POSTGRES_DB: payflow
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
