@@ -14,4 +14,8 @@ export class EmployeeService {
       },
     });
   }
+
+  async findAll() {
+    return this.prisma.employee.findMany();
+  }
 }
