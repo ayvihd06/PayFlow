@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 @Injectable()
 export class EmployeeService {
@@ -29,5 +30,18 @@ export class EmployeeService {
     }
 
     return employee;
+  }
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    await this.findOne(id);
+
+    return this.prisma.employee.update({
+        where: { id },
+        data: {
+        ...updateEmployeeDto,
+        ...(updateEmployeeDto.dateOfJoining && {
+            dateOfJoining: new Date(updateEmployeeDto.dateOfJoining),
+        }),
+        },
+    });
   }
 }
