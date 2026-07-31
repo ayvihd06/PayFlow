@@ -17,8 +17,12 @@ export class EmployeeService {
   }
 
   async findAll() {
-    return this.prisma.employee.findMany();
-  }
+  return this.prisma.employee.findMany({
+    where: {
+      isActive: true,
+    },
+  });
+ }
 
   async findOne(id: number) {
     const employee = await this.prisma.employee.findUnique({
@@ -47,8 +51,11 @@ export class EmployeeService {
   async remove(id: number) {
   await this.findOne(id);
 
-  return this.prisma.employee.delete({
+  return this.prisma.employee.update({
     where: { id },
+    data: {
+      isActive: false,
+    },
   });
  }
 }
