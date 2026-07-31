@@ -44,4 +44,11 @@ export class EmployeeService {
         },
     });
   }
+  async remove(id: number) {
+  await this.findOne(id);
+
+  return this.prisma.employee.delete({
+    where: { id },
+  });
+ }
 }
