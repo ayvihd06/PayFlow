@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
@@ -22,8 +23,11 @@ export class EmployeeController {
   }
 
   @Get()
-  findAll() {
-    return this.employeeService.findAll();
+  findAll(
+    @Query('search') search?: string,
+    @Query('department') department?: string,
+  ) {
+    return this.employeeService.findAll(search, department);
   }
 
   @Get(':id')

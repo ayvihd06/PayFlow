@@ -16,10 +16,46 @@ export class EmployeeService {
     });
   }
 
-  async findAll() {
+  async findAll(search?: string, department?: string) {
   return this.prisma.employee.findMany({
     where: {
       isActive: true,
+
+      ...(department && {
+        department: {
+          equals: department,
+          mode: 'insensitive',
+        },
+      }),
+
+      ...(search && {
+        OR: [
+          {
+            firstName: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            employeeId: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            email: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      }),
     },
   });
  }
