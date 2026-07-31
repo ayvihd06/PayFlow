@@ -16,7 +16,12 @@ export class EmployeeService {
     });
   }
 
-  async findAll(search?: string, department?: string) {
+  async findAll(
+  search?: string,
+  department?: string,
+  page: number = 1,
+  limit: number = 10,
+) {
   return this.prisma.employee.findMany({
     where: {
       isActive: true,
@@ -57,8 +62,11 @@ export class EmployeeService {
         ],
       }),
     },
+
+    skip: (page - 1) * limit,
+    take: limit,
   });
- }
+}
 
   async findOne(id: number) {
     const employee = await this.prisma.employee.findUnique({

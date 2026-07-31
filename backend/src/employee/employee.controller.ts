@@ -26,8 +26,15 @@ export class EmployeeController {
   findAll(
     @Query('search') search?: string,
     @Query('department') department?: string,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
   ) {
-    return this.employeeService.findAll(search, department);
+    return this.employeeService.findAll(
+      search,
+      department,
+      Number(page),
+      Number(limit),
+    );
   }
 
   @Get(':id')
