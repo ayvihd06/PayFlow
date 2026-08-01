@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -28,4 +29,19 @@ export class QueryEmployeeDto {
   @Min(1)
   @Max(100)
   limit: number = 10;
+
+  @IsOptional()
+  @IsIn([
+    'firstName',
+    'lastName',
+    'employeeId',
+    'department',
+    'dateOfJoining',
+    'createdAt',
+  ])
+  sortBy: string = 'createdAt';
+
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  sortOrder: 'asc' | 'desc' = 'desc';
 }

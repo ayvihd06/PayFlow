@@ -21,6 +21,8 @@ export class EmployeeService {
   department?: string,
   page: number = 1,
   limit: number = 10,
+  sortBy: string = 'createdAt',
+  sortOrder: 'asc' | 'desc' = 'desc',
 ) {
   const where = {
     isActive: true,
@@ -60,11 +62,16 @@ export class EmployeeService {
         },
       ],
     }),
-   };
+  };
 
   const [employees, total] = await Promise.all([
     this.prisma.employee.findMany({
       where,
+
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+
       skip: (page - 1) * limit,
       take: limit,
     }),

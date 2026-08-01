@@ -30,6 +30,8 @@ export class EmployeeController {
       query.department,
       query.page,
       query.limit,
+      query.sortBy,
+      query.sortOrder,
     );
   }
 
