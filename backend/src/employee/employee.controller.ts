@@ -12,6 +12,7 @@ import {
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeService } from './employee.service';
+import { QueryEmployeeDto } from './dto/query-employee.dto';
 
 @Controller('employees')
 export class EmployeeController {
@@ -23,17 +24,12 @@ export class EmployeeController {
   }
 
   @Get()
-  findAll(
-    @Query('search') search?: string,
-    @Query('department') department?: string,
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ) {
+  findAll(@Query() query: QueryEmployeeDto) {
     return this.employeeService.findAll(
-      search,
-      department,
-      page,
-      limit,
+      query.search,
+      query.department,
+      query.page,
+      query.limit,
     );
   }
 
