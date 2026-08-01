@@ -26,14 +26,14 @@ export class EmployeeController {
   findAll(
     @Query('search') search?: string,
     @Query('department') department?: string,
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
     return this.employeeService.findAll(
       search,
       department,
-      Number(page),
-      Number(limit),
+      page,
+      limit,
     );
   }
 
