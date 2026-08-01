@@ -22,50 +22,67 @@ export class EmployeeService {
   page: number = 1,
   limit: number = 10,
 ) {
-  return this.prisma.employee.findMany({
-    where: {
-      isActive: true,
+  const where = {
+    isActive: true,
 
-      ...(department && {
-        department: {
-          equals: department,
-          mode: 'insensitive',
+    ...(department && {
+      department: {
+        equals: department,
+        mode: 'insensitive' as const,
+      },
+    }),
+
+    ...(search && {
+      OR: [
+        {
+          firstName: {
+            contains: search,
+            mode: 'insensitive' as const,
+          },
         },
-      }),
+        {
+          lastName: {
+            contains: search,
+            mode: 'insensitive' as const,
+          },
+        },
+        {
+          employeeId: {
+            contains: search,
+            mode: 'insensitive' as const,
+          },
+        },
+        {
+          email: {
+            contains: search,
+            mode: 'insensitive' as const,
+          },
+        },
+      ],
+    }),
+   };
 
-      ...(search && {
-        OR: [
-          {
-            firstName: {
-              contains: search,
-              mode: 'insensitive',
-            },
-          },
-          {
-            lastName: {
-              contains: search,
-              mode: 'insensitive',
-            },
-          },
-          {
-            employeeId: {
-              contains: search,
-              mode: 'insensitive',
-            },
-          },
-          {
-            email: {
-              contains: search,
-              mode: 'insensitive',
-            },
-          },
-        ],
-      }),
+  const [employees, total] = await Promise.all([
+    this.prisma.employee.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+
+    this.prisma.employee.count({
+      where,
+    }),
+  ]);
+
+  return {
+    data: employees,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     },
-
-    skip: (page - 1) * limit,
-    take: limit,
-  });
+  };
 }
 
   async findOne(id: number) {
