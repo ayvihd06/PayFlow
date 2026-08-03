@@ -86,4 +86,26 @@ export class SalaryService {
     return currentSalary;
     }
 
+    async getSalarySummary(employeeId: number) {
+    const currentSalary = await this.findCurrentByEmployee(employeeId);
+
+    const basicSalary = Number(currentSalary.basicSalary);
+    const allowances = Number(currentSalary.allowances);
+    const deductions = Number(currentSalary.deductions);
+
+    const grossSalary = basicSalary + allowances;
+    const netSalary = grossSalary - deductions;
+
+    return {
+        employeeId,
+        salaryId: currentSalary.id,
+        effectiveFrom: currentSalary.effectiveFrom,
+        basicSalary,
+        allowances,
+        deductions,
+        grossSalary,
+        netSalary,
+    };
+    }
+
 }
