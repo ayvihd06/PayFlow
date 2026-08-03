@@ -47,6 +47,12 @@ export class EmployeeController {
   ) {
     return this.employeeService.update(id, updateEmployeeDto);
   }
+
+  @Patch(':id/reactivate')
+  reactivate(@Param('id', ParseIntPipe) id: number) {
+    return this.employeeService.reactivate(id);
+  }
+
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.employeeService.remove(id);
