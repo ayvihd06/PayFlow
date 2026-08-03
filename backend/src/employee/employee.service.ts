@@ -1,19 +1,42 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+
 
 @Injectable()
 export class EmployeeService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
-    return this.prisma.employee.create({
-      data: {
-        ...createEmployeeDto,
-        dateOfJoining: new Date(createEmployeeDto.dateOfJoining),
-      },
-    });
+    try {
+      return await this.prisma.employee.create({
+        data: {
+          ...createEmployeeDto,
+          dateOfJoining: new Date(createEmployeeDto.dateOfJoining),
+        },
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        const field = error.meta?.target?.[0];
+
+        if (field === 'employeeId') {
+          throw new ConflictException('Employee ID already exists');
+        }
+
+        if (field === 'email') {
+          throw new ConflictException('Email already exists');
+        }
+
+        throw new ConflictException('A unique employee field already exists');
+      }
+
+      throw error;
+    }
   }
 
   async findAll(
