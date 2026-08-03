@@ -129,15 +129,33 @@ export class EmployeeService {
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
     await this.findOne(id);
 
-    return this.prisma.employee.update({
+    try {
+      return await this.prisma.employee.update({
         where: { id },
         data: {
-        ...updateEmployeeDto,
-        ...(updateEmployeeDto.dateOfJoining && {
+          ...updateEmployeeDto,
+          ...(updateEmployeeDto.dateOfJoining && {
             dateOfJoining: new Date(updateEmployeeDto.dateOfJoining),
-        }),
+          }),
         },
-    });
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        const field = error.meta?.target?.[0];
+
+        if (field === 'employeeId') {
+          throw new ConflictException('Employee ID already exists');
+        }
+
+        if (field === 'email') {
+          throw new ConflictException('Email already exists');
+        }
+
+        throw new ConflictException('A unique employee field already exists');
+      }
+
+      throw error;
+    }
   }
   async remove(id: number) {
   await this.findOne(id);
