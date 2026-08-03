@@ -52,4 +52,38 @@ export class SalaryService {
     });
     }
 
+    async findCurrentByEmployee(employeeId: number) {
+    const employee = await this.prisma.employee.findUnique({
+        where: {
+        id: employeeId,
+        },
+    });
+
+    if (!employee) {
+        throw new NotFoundException(
+        `Employee with ID ${employeeId} not found`,
+        );
+    }
+
+    const currentSalary = await this.prisma.salary.findFirst({
+        where: {
+        employeeId,
+        effectiveFrom: {
+            lte: new Date(),
+        },
+        },
+        orderBy: {
+        effectiveFrom: 'desc',
+        },
+    });
+
+    if (!currentSalary) {
+        throw new NotFoundException(
+        `No current salary found for employee with ID ${employeeId}`,
+        );
+    }
+
+    return currentSalary;
+    }
+
 }

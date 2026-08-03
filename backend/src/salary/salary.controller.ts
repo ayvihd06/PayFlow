@@ -13,6 +13,13 @@ import { CreateSalaryDto } from './dto/create-salary.dto';
 export class SalaryController {
 constructor(private readonly salaryService: SalaryService) {}
 
+@Get('employee/:employeeId/current')
+findCurrentByEmployee(
+@Param('employeeId', ParseIntPipe) employeeId: number,
+) {
+return this.salaryService.findCurrentByEmployee(employeeId);
+}
+
 @Get('employee/:employeeId')
 findByEmployee(
 @Param('employeeId', ParseIntPipe) employeeId: number,
