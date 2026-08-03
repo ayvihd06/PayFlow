@@ -19,6 +19,23 @@ model Employee {
   dateOfJoining DateTime
   isActive      Boolean  @default(true)
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  salaries  Salary[]
+}
+
+model Salary {
+  id            Int      @id @default(autoincrement())
+  employeeId    Int
+  basicSalary   Decimal
+  allowances    Decimal  @default(0)
+  deductions    Decimal  @default(0)
+  effectiveFrom DateTime
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeId])
 }
