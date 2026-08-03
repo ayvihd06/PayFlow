@@ -29,4 +29,27 @@ export class SalaryService {
       },
     });
   }
+  async findByEmployee(employeeId: number) {
+    const employee = await this.prisma.employee.findUnique({
+    where: {
+    id: employeeId,
+    },
+    });
+
+    if (!employee) {
+    throw new NotFoundException(
+    `Employee with ID ${employeeId} not found`,
+    );
+    }
+
+    return this.prisma.salary.findMany({
+    where: {
+    employeeId,
+    },
+    orderBy: {
+    effectiveFrom: 'desc',
+    },
+    });
+    }
+
 }

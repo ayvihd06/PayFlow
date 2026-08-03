@@ -1,10 +1,24 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+Body,
+Controller,
+Get,
+Param,
+ParseIntPipe,
+Post,
+} from '@nestjs/common';
 import { SalaryService } from './salary.service';
 import { CreateSalaryDto } from './dto/create-salary.dto';
 
 @Controller('salaries')
 export class SalaryController {
 constructor(private readonly salaryService: SalaryService) {}
+
+@Get('employee/:employeeId')
+findByEmployee(
+@Param('employeeId', ParseIntPipe) employeeId: number,
+) {
+return this.salaryService.findByEmployee(employeeId);
+}
 
 @Post()
 create(@Body() createSalaryDto: CreateSalaryDto) {
